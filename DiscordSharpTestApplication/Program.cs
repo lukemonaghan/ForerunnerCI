@@ -11,13 +11,22 @@ namespace DiscordSharpTestApplication
 
         public static void Main(string[] args)
 		{
-			if (args.Length < 5)
+			if (args.Length < 8)
 			{
 				Console.WriteLine("Args Mismatch, should be \n [EMAIL] [PASSWORD] [SERVER_ID] [CHANNEL_ID] [URL] [COMMIT] [BRANCH] [SLUG] [MESSAGE STRING GOES AT THE END]");
 				// halt for a sec. Just so user can read stuff.
 				Thread.Sleep(1000);
 				return;
 			}
+
+			// debug info
+	        for (var index = 0; index < args.Length; index++)
+	        {
+		        Console.WriteLine($"args[{index}] = {args[index]}");
+	        }
+
+	        // Bot instantiate
+			Console.WriteLine("DiscordSharp Command Bot");
 
 			var username	= args[0];
 	        var password	= args[1];
@@ -30,22 +39,24 @@ namespace DiscordSharpTestApplication
 
 			//offset to make the generic message
 			var msgOffset	= 8;
-
-			// Bot instantiate
-			Console.WriteLine("DiscordSharp Command Bot");
-
-            // Bot setup
-            Login(username, password);
-
-			// user message
 			var msg = "";
-			for (var i = msgOffset; i < args.Length; i++)
+			for (; msgOffset < args.Length; msgOffset++)
 			{
-				msg += args[i] + " ";
+				msg += args[msgOffset] + " ";
 			}
 
+			// Bot setup
+			Login(username, password);
+
 			// Craft our message.
-			var comment = $"**TravisCI**\n{msg}\n```\nCommit: {commit}\nRepo:{slug}\nBranch: {branch}\n```URL: {URL}\n\n";
+			var comment = $"**TravisCI**\n" +
+			              $"{msg}\n" +
+			              $"```\n" +
+			              $"Commit: {commit}\n" +
+			              $"Repo: {slug}\n" +
+			              $"Branch: {branch}\n" +
+			              $"```" +
+			              $"URL: {URL}\n\n";
 
 			// get channel and server
 	        var server = GetServerFromID(serverID);
