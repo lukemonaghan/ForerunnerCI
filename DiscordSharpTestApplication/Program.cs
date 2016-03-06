@@ -10,60 +10,67 @@ namespace DiscordSharpTestApplication
         public static DiscordClient client = new DiscordClient();
 
         public static void Main(string[] args)
-        {
-			// args[0] = username
-			// args[1] = password
-			// args[2] = serverID
-			// args[3] = channelID
-			// args[4-n] = message
-
-	        if (args.Length < 4)
-	        {
-				Console.WriteLine("Args Mismatch, should be \n EMAIL PASSWORD SERVER_ID CHANNEL_ID MESSAGE STRING GOES AT THE END");
+		{
+			if (args.Length < 5)
+			{
+				Console.WriteLine("Args Mismatch, should be \n [EMAIL] [PASSWORD] [SERVER_ID] [CHANNEL_ID] [URL] [MESSAGE STRING GOES AT THE END]");
+				// halt for a sec. Just so user can read stuff.
 				Thread.Sleep(1000);
 				return;
-	        }
+			}
 
-	        foreach (var v in args)
-	        {
-				Console.WriteLine(v);
-	        }
+			var username	= args[0];
+	        var password	= args[1];
+	        var serverID	= args[2];
+	        var channelID	= args[3];
+	        var URL			= args[4];
+
+			//offset to make the generic message
+			var msgOffset	= 5;
 
 			// Bot instantiate
 			Console.WriteLine("DiscordSharp Command Bot");
 
-            client.ClientPrivateInformation = new DiscordUserInformation();
-
             // Bot setup
-            Login(args[0],args[1]);
+            Login(username, password);
 
 			// Craft our message.
-			var msg = "";
-			for (var i = 4; i < args.Length; i++)
+			var msg = $"**TravisCI**\n{URL}\n\n";
+			for (var i = msgOffset; i < args.Length; i++)
 			{
 				msg += args[i] + " ";
 			}
 
-			GetChannelFromServer(GetServerFromID(args[2]), args[3]).SendMessage(msg);
+			// get channel and server
+	        var server = GetServerFromID(serverID);
+            var channel = GetChannelFromServer(server, channelID);
+			channel.SendMessage(msg);
 
             // Destroy the client
             client.Dispose();
 
+			// halt for a sec. Just so I can read stuff.
 			Thread.Sleep(1000);
         }
 
 	    // Creation of a credentials text file (RAW PASSWORD VISIBLE)
         private static void Login(string email, string pass)
-        {
-            client.ClientPrivateInformation.email = email;
-            client.ClientPrivateInformation.password = pass;
+		{
+	        client.ClientPrivateInformation = new DiscordUserInformation
+	        {
+		        email = email,
+		        password = pass
+	        };
 
-			// logged in
-			if (client.SendLoginRequest() == null)
-				return;
+	        // logged in
+	        if (client.SendLoginRequest() == null)
+	        {
+		        return;
+	        }
 
 			Console.WriteLine("Logged in!");
 			client.Connect();
+
 			Console.WriteLine($"Connected to {client.CurrentGatewayURL}");
 			client.UpdateCurrentGame("By Luke Monaghan");
 
