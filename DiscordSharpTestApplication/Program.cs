@@ -1,4 +1,5 @@
-﻿using DiscordSharp;
+﻿using System;
+using DiscordSharp;
 using System.Threading;
 using DiscordSharp.Objects;
 
@@ -6,7 +7,6 @@ namespace DiscordSharpTestApplication
 {
     public class Program
     {
-
         public static DiscordClient client = new DiscordClient();
 
         public static void Main(string[] args)
@@ -19,19 +19,18 @@ namespace DiscordSharpTestApplication
 
 	        if (args.Length < 4)
 	        {
-				Debug.Log("Args Mismatch, should be \n" +
-				          "EMAIL PASSWORD SERVER_ID CHANNEL_ID MESSAGE STRING GOES AT THE END",MessageLevel.Critical);
+				Console.WriteLine("Args Mismatch, should be \n EMAIL PASSWORD SERVER_ID CHANNEL_ID MESSAGE STRING GOES AT THE END");
 				Thread.Sleep(1000);
 				return;
 	        }
 
 	        foreach (var v in args)
 	        {
-		        Debug.Log(v);
+				Console.WriteLine(v);
 	        }
 
-            // Bot instantiate
-            Debug.Log("DiscordSharp Command Bot",MessageLevel.Critical);
+			// Bot instantiate
+			Console.WriteLine("DiscordSharp Command Bot");
 
             client.ClientPrivateInformation = new DiscordUserInformation();
 
@@ -63,9 +62,9 @@ namespace DiscordSharpTestApplication
 			if (client.SendLoginRequest() == null)
 				return;
 
-			Debug.Log("Logged in!");
+			Console.WriteLine("Logged in!");
 			client.Connect();
-			Debug.Log($"Connected to {client.CurrentGatewayURL}");
+			Console.WriteLine($"Connected to {client.CurrentGatewayURL}");
 			client.UpdateCurrentGame("By Luke Monaghan");
 
 			// we make her wait a little bit, else it doesnt hook up the backend
