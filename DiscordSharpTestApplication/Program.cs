@@ -65,9 +65,6 @@ namespace DiscordSharpTestApplication
 
             // Destroy the client
             client.Dispose();
-
-			// halt for a sec. Just so I can read stuff.
-			Thread.Sleep(1000);
         }
 
 	    // Creation of a credentials text file (RAW PASSWORD VISIBLE)
