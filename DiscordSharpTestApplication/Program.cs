@@ -13,7 +13,7 @@ namespace DiscordSharpTestApplication
 		{
 			if (args.Length < 5)
 			{
-				Console.WriteLine("Args Mismatch, should be \n [EMAIL] [PASSWORD] [SERVER_ID] [CHANNEL_ID] [URL] [MESSAGE STRING GOES AT THE END]");
+				Console.WriteLine("Args Mismatch, should be \n [EMAIL] [PASSWORD] [SERVER_ID] [CHANNEL_ID] [URL] [COMMIT] [BRANCH] [SLUG] [MESSAGE STRING GOES AT THE END]");
 				// halt for a sec. Just so user can read stuff.
 				Thread.Sleep(1000);
 				return;
@@ -24,9 +24,12 @@ namespace DiscordSharpTestApplication
 	        var serverID	= args[2];
 	        var channelID	= args[3];
 	        var URL			= args[4];
+	        var commit		= args[5];
+	        var branch		= args[6];
+	        var slug		= args[7];
 
 			//offset to make the generic message
-			var msgOffset	= 5;
+			var msgOffset	= 8;
 
 			// Bot instantiate
 			Console.WriteLine("DiscordSharp Command Bot");
@@ -34,17 +37,20 @@ namespace DiscordSharpTestApplication
             // Bot setup
             Login(username, password);
 
-			// Craft our message.
-			var msg = $"**TravisCI**\n{URL}\n\n";
+			// user message
+			var msg = "";
 			for (var i = msgOffset; i < args.Length; i++)
 			{
 				msg += args[i] + " ";
 			}
 
+			// Craft our message.
+			var comment = $"**TravisCI**\n{msg}\n```\nCommit: {commit}\nRepo:{slug}\nBranch: {branch}\n```URL: {URL}\n\n";
+
 			// get channel and server
 	        var server = GetServerFromID(serverID);
             var channel = GetChannelFromServer(server, channelID);
-			channel.SendMessage(msg);
+			channel.SendMessage(comment);
 
             // Destroy the client
             client.Dispose();
